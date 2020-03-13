@@ -252,26 +252,32 @@ cmt_discipline_referral <- cmt %>%
                names_to = "referral",
                values_to = "status")
 
+
+
 cmt_discipline_referral$status <- factor(cmt_discipline_referral$status, levels = c("Yes",
                                                                                     "No"))
 
-plot_3 <- ggplot(cmt_discipline_referral, aes(x = referral)) +
-  geom_bar(aes(fill = status), position = "dodge") +
-  scale_fill_brewer(palette = "Set2") +
+plot_3_data <- cmt_discipline_referral %>% 
+  count(referral, status)
+
+
+plot_3 <- ggplot(plot_3_data, aes(referral, n)) +
+  geom_col(aes(fill = status), position = position_dodge2(reverse = TRUE)) +
+  scale_fill_OkabeIto() +
   theme_minimal() +
   coord_flip() +
-  scale_x_discrete(limits = rev(levels(cmt_discipline_referral$referral))) +
   theme(plot.title = element_text(color = "black", size = 12, face = "bold", hjust = 0.5),
         axis.text = element_text(size = 12),
         axis.title = element_text(size=12),
         legend.text = element_text(size = 12)) +
-  guides(fill = guide_legend(reverse = TRUE)) +
-  labs(x = "Referral Discipline", 
+  scale_x_discrete(expand = c(0,0)) +
+  labs(x = "Referral Discipline",
        y = "Total",
-       title = "Referral Status for Clients Enterting CMT Tracking",
-       fill = "Referral \nStatus")
+       fill = "Sex",
+       title = "Referral Status for Clients Entering CMT Tracking",
+       fill = "Refferal \nStatus")
 
-ggplotly(plot_3, tooltip = "all")
+ggplotly(plot_3)
 
 ```
 
